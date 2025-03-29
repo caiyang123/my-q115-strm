@@ -31,7 +31,10 @@ docker commit q115-strm my-q115-strm:latest
 
 新建115账号
     通过命令行扫码获取cookie，以下脚本在windows下也可以执行
-    python3 /app/get_cookie.py wechatmini -o
+    windows下命令(生成图片)
+        python3 /app/get_cookie.py wechatmini -o
+    linux下命令(直接在终端打印二维码)
+        python3 /app/get_cookie.py wechatmini
 新建同步配置
     用cd2方式生成本地路径时能选择复制元数据，复制字幕文件，但cd2路径起播速度较慢
     replace_cd2_with_alist True 替换路径为alist的路径
