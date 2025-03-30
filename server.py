@@ -8,6 +8,7 @@ from flask_httpauth import HTTPBasicAuth
 from job import StartJob
 from lib import Libs, Lib, OO5List, Setting, TGBot
 from telebot import apihelper
+import get_cookie
 proxyHost = os.getenv('PROXY_HOST', '')
 if proxyHost != '':
     apihelper.proxy = {'http': proxyHost, 'https': proxyHost}
@@ -174,7 +175,6 @@ class DirApi(Resource):
                 continue
             result.append(dir)
         return {'code': 200, 'msg': '', 'data': result}
-
         
 api.add_resource(Libs, '/api/libs')
 api.add_resource(Lib, '/api/lib/<key>')
@@ -207,6 +207,43 @@ def verify_password(username, password):
 @auth.login_required
 def index():
     return app.send_static_file('index.html')
+
+@app.route('/cookie')
+@auth.login_required
+def cookie():
+    return app.send_static_file('cookie.html')
+
+@app.route('/qrcode/<app>')
+@auth.login_required
+def qrcode(app):
+    qrcode_token = get_cookie.get_qrcode_token()["data"]
+    qrcode_token["img"] = "https://qrcodeapi.115.com/api/1.0/mac/1.0/qrcode?uid=%s" % qrcode_token["uid"]
+    return {'code': 200, 'msg': '', 'data': qrcode_token}
+
+@app.route('/get_qrcode_status/<app>', methods=['POST'])
+@auth.login_required
+def get_qrcode_status(app):
+    qrcode_token = request.get_json()
+    resp = get_cookie.get_qrcode_status(qrcode_token)
+    status = resp["data"].get("status")
+    if status == 0:
+        print("[status=0] qrcode: waiting")
+    elif status == 1:
+        print("[status=1] qrcode: scanned")
+    elif status == 2:
+        print("[status=2] qrcode: signed in")
+    elif status == -1:
+        print("[status=-1] qrcode: expired")
+    elif status == -2:
+        print("[status=-2] qrcode: canceled")
+    else:
+        print("qrcode: aborted with %r" % resp)
+
+    cookie = ''
+    if status == 2:
+        resp = get_cookie.post_qrcode_result(qrcode_token["uid"], app)
+        cookie = "; ".join("%s=%s" % t for t in resp['data']['cookie'].items())
+    return {'code': 200, 'msg': '', 'data': {'status': status, 'cookie': cookie}}
 
 @app.route('/assets/<path:filename>')
 def assets(filename):

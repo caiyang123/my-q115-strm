@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Q115-STRM</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+        <form @submit.prevent="handleSubmit">
+            <select name="type" v-model="appSelected">
+                <option :value="app" v-for="app in apps" >{{app}}</option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+        <img :src="qrcode">
+        <h1>Cookie:</h1>
+        <textarea style="width: 500px; height: 100px;" v-model="cookie"></textarea>
+    </div>
+    <script>
+
+      const { createApp, ref } = Vue
+
+      createApp({
+        data() {
+            return {
+                apps: ['web', 'android', 'ios', 'linux', 'mac', 'windows', 'tv', 'qandroidq', 'wechatmini', 'alipaymini'],
+                appSelected: 'wechatmini',
+                qrcode: '',
+                cookie: '',
+                qrcode_uid: null,
+                qrcode_time: null,
+                qrcode_sign: null,
+                qrcode_status: 0
+            }
+        },
+        methods: {
+            handleSubmit() {
+              axios.get('/qrcode/' + this.appSelected)
+                .then(response => {
+                    qrcode_token = response.data.data;
+                    this.qrcode = qrcode_token.img;
+                    this.qrcode_uid = qrcode_token.uid;
+                    this.qrcode_sign = qrcode_token.sign;
+                    this.qrcode_time = qrcode_token.time;
+                    setTimeout(this.get_qrcode_status, 2000)
+                })
+                .catch(error => {
+                  console.error('Error submitting form', error);
+                  // 处理错误，如显示错误消息等
+                });
+            },
+            get_qrcode_status() {
+              var qrcode_token = {uid: this.qrcode_uid, sign: this.qrcode_sign, time: this.qrcode_time};
+              axios.post('/get_qrcode_status/' + this.appSelected, qrcode_token)
+                .then(response => {
+                    this.qrcode_status = response.data.data.status;
+                    if (this.qrcode_status == 2) {
+                        this.cookie = response.data.data.cookie;
+                    } else if (this.qrcode_status == 0 || this.qrcode_status == 1) {
+                        setTimeout(this.get_qrcode_status, 2000);
+                    } else {
+                        this.cookie = '获取失败';
+                    }
+                })
+            }
+        }
+      }).mount('#app')
+    </script>
+  </body>
+</html>
