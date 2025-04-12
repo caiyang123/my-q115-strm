@@ -323,7 +323,10 @@ class Job:
                         alist_115_path = self.lib.alist_115_path.strip('/')
                         strm_content = '{0}/d/{1}/{2}'.format(url, alist_115_path, '/'.join(newPath))
                     else:
-                        strm_content = os.path.join(self.lib.path_of_115, path)
+                        if self.lib.replace_cd2_with_local:
+                            strm_content = os.path.join(self.lib.local_path, path)
+                        else:
+                            strm_content = os.path.join(self.lib.path_of_115, path)
                 else:
                     strm_content = os.path.join(self.lib.path, path)
             else:

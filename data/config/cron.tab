@@ -1,1 +1,2 @@
 */10 * * * * python3 /app/life_event_change.py -k d5ecf850bab937d96b8375f2e04f5884
+*/10 * * * * python3 /app/life_event_change.py -k e906ec779ab4ac6cbfdf30db5cbb3f1c

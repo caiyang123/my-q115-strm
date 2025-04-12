@@ -11,7 +11,9 @@ if proxyHost != '':
     apihelper.proxy = {'http': proxyHost, 'https': proxyHost}
 TABFILE = './data/config/cron.tab'
 
-replace_cd2_with_alist = bool(os.getenv('replace_cd2_with_alist', 'True'))
+replace_cd2_with_alist = bool(os.getenv('replace_cd2_with_alist', 'False'))
+replace_cd2_with_local = bool(os.getenv('replace_cd2_with_local', 'False'))
+local_path = os.getenv('local_path', '/storage/videos/CloudNAS/CloudDrive/115')
 
 def GetNow():
     # 获取当前时间
@@ -121,6 +123,8 @@ class LibBase:
         self.strm_ext = newStrmExt
         self.meta_ext = newMetaExt
         self.replace_cd2_with_alist = bool(data.get('replace_cd2_with_alist')) if data.get('replace_cd2_with_alist') is not None else replace_cd2_with_alist
+        self.replace_cd2_with_local = bool(data.get('replace_cd2_with_local')) if data.get('replace_cd2_with_local') is not None else replace_cd2_with_local
+        self.local_path = data.get('local_path') if data.get('local_path') is not None else local_path
         if self.key == '':
             self.makeKey()
             
