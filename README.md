@@ -55,3 +55,15 @@ docker commit my-q115-strm my-q115-strm:latest
 修改data/config/cron.tab并上传到container映射的目录，定时判断115有没有增删改事件，如果有则同步增删改strm
 -k 参数为同步配置的key，查看/vol1/1000/docker/my-q115-strm/data/config/libs.json获取
 
+增加emby_pinyin.py
+https://github.com/whorace97/emby_pinyin
+
+Emby拼音首字母搜索和按拼音排序，通过修改nfo文件达到效果，仅会处理电影与电视剧的nfo文件，不处理季、集的文件，程序将修改nfo文件中的originaltitle和sorttitle两个字段，并且会备份原有信息，修改后可以实现用拼音首字母搜索、按照拼音首字母排序的效果。
+通过传入--restore指令可以恢复程序对nfo文件做出的修改。如果只想看一下程序将如何对你的文件进行处理，可传入--dry-run或者-n。程序对你的文件做出的修改将以html格式保存在 ./diff 文件夹中，可通过--diff-out指定文件夹。
+程序使用自动化xml生成程序，可能会将原文件中不规范的的 双引号 替换为 " ，这不是程序错误哦。
+
+python emby_pinyin.py -d '文件夹'
+
+修改data/config/cron.tab, 增加定时更新nfo文件，并上传到container映射的目录
+0 10 * * * python3 /app/emby_pinyin.py -d /media
+

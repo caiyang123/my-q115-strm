@@ -10,3 +10,4 @@ rich
 pyTelegramBotAPI
 telegramify-markdown
 psutil
+pypinyin
