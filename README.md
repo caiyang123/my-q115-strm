@@ -67,3 +67,15 @@ python emby_pinyin.py -d '文件夹'
 修改data/config/cron.tab, 增加定时更新nfo文件，并上传到container映射的目录
 0 10 * * * python3 /app/emby_pinyin.py -d /media
 
+windows下远程
+python emby_pinyin.py -d \\192.168.2.102\strm\整理库
+
+替换域名
+replace_domain.py
+
+修改data/config/cron.tab, 增加定时更新nfo文件，并上传到container映射的目录
+*/30 * * * * python3 /app/replace_domain.py /vol1/1000/strm_192.168.2.102 zxr.com 192.168.2.10
+
+windows下远程
+python.exe .\replace_domain.py \\192.168.3.102\strm_192.168.2.102 zxr.com 192.168.2.102
+

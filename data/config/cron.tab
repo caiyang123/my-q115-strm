@@ -1,3 +1,4 @@
 */10 * * * * python3 /app/life_event_change.py -k d5ecf850bab937d96b8375f2e04f5884
 */10 * * * * python3 /app/life_event_change.py -k e906ec779ab4ac6cbfdf30db5cbb3f1c
-0 10 * * * python3 /app/emby_pinyin.py -d /media
+*/30 * * * * python3 /app/replace_domain.py /vol1/1000/strm_192.168.2.102 zxr.com 192.168.2.102
+0 */2 * * * python3 /app/emby_pinyin.py -d /media
